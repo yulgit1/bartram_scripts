@@ -1,0 +1,87 @@
+install solr
+https://github.com/projectblacklight/blacklight/wiki/README_SOLR
+
+set up directory structure for new outputs
+root_directory_new = '/Users/erjhome/RubymineProjects/Amy_Natural_History/erj'
+image_directory = "#{root_directory_new}/images"
+markdown_notebooks = "#{root_directory_new}/notebook_markdown"
+manifest_directory = "#{root_directory_new}/manifests"
+
+docx_to_md
+https://ruby-doc.org/stdlib-2.2.2/libdoc/fileutils/rdoc/FileUtils.html
+	mkdir_p
+sysops-MBP-3% ruby splitpdfs.rb
+pandoc: Selection: openBinaryFile: does not exist (No such file or directory)
+pandoc: /Users/erjhome/RubymineProjects/Amy_Natural_History/Meyers Natural History_Binders/Binder2/~0_Breintnall_Joseph_various leaves.docx: openBinaryFile: does not exist (No such file or directory)
+pandoc: /Users/erjhome/RubymineProjects/Amy_Natural_History/Meyers Natural History_Binders/Binder4/~0_de Brahm_William Gerard_Phytolacca.docx: openBinaryFile: does not exist (No such file or directory)
+pandoc: /Users/erjhome/RubymineProjects/Amy_Natural_History/Meyers Natural History_Binders/Binder5/~sh1_Lesueur_Charles Alexandre_Walnut Hills.docx: openBinaryFile: does not exist (No such file or directory)
+
+generate_metadata
+1) cp scans_metadata_edited.tsv
+sysops-MBP-3% ruby splitpdfs.rb
+Skipping Preliminary Selection List Draft 12
+Skipping ~$80
+Skipping ~$10
+Skipping ~$01
+
+generate_manifests
+1) FileUtils.mkdir_p(manifest_directory) unless Dir.exist?(manifest_directory)
+sysops-MBP-3% ruby splitpdfs.rb
+
+index_scans
+sysops-MBP-3% ruby splitpdfs.rb
+
+Num Docs:
+779
+fq=format:"scan"
+fl=*
+
+http://localhost:8983/solr/blacklight-core/select?fq=format%3A%22scan%22&rows=100&fl=*&wt=json&indent=true
+
+notebookdocx_to_md
+FileUtils.mkdir_p(output_directory) unless Dir.exist?(output_directory)
+sysops-MBP-3% ruby splitpdfs.rb
+pandoc: /Users/erjhome/RubymineProjects/Amy_Natural_History/Meyers Natural History_Notebooks/book 7/~ Morris Arboretum-W Bartrams Travels.docx: openBinaryFile: does not exist (No such file or directory)
+
+index_notebooks
+next unless md.start_with?("entry")
+
+173
+fq=format:”text”
+fl=*
+
+http://localhost:8983/solr/blacklight-core/select?fq=format%3A%22text%22&fl=*&wt=json&indent=true
+
+---
+
+blacklight for Bertram:
+https://github.com/projectblacklight/blacklight/wiki/Quickstart
+install error:
+  https://gist.github.com/yulgit1/fb66fe5f7149f232abbdbffa3c15df3d
+start solr: /Users/erjhome/github_clones/blacklight-jetty
+blacklight: /Users/erjhome/RubymineProjects/
+https://github.com/yulgit1/natural_history/blob/master/app/views/catalog/_viewer.html.erb
+
+--- inventory
+BBinderX - PDF and corresponding docx
+  docx_to_md - BinderX/*.docx -> images/0001/description-0001.md
+  generate_metadata - tsv+description-0001.md -> images/0001/metadata-0001.json
+  generate_manifests - images/0001/metadata-0001.json -> manifests/0001/scan-0001.json
+  index_scans - format:"scan"
+ Notebook - docx (entry in book)
+  notebookdocx_to_md(notebook_directory, markdown_notebooks)
+  index_notebooks - format:"text"
+ -- content for blacklight
+  binder: PDF,docx,md,metadata,manifest
+  notebook: docx,md
+-- question
+  blacklight(solr metadata+iiif manifest)- TODO: catalogcontroller treaks, notebook: real manifest (for markdown->manifest)?
+   or samvera (content model and datastreams)
+
+
+
+
+
+
+
+
