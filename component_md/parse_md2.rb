@@ -81,8 +81,9 @@ fblocks.each do |k,v|
   id = k.split("_").slice(0..2).join("_")
   entry = k.split("_")[0].gsub("s","")
   book = k.split("_")[1].gsub("b","")
+  object = k.split("_")[2].gsub("o","")
   subject = parse_key_for_subject(k)
-  label = "Notebook #{book}, Entry #{entry}, #{subject}"
+  label = "Notebook #{book}, Entry #{entry}, Object #{object}"
   scan = ""
   scan_file = ""
   scan = k.split("_")[3].gsub("sc","") if (k.split("_").length == 4)
@@ -93,6 +94,7 @@ fblocks.each do |k,v|
   doc[:id] = id
   doc[:entry_s] = entry
   doc[:book_s] = book
+  doc[:object_s] = object
   doc[:subject_s] = subject if subject.empty? == false
   doc[:label_s] = label
   doc[:location_s] = "Yale Center for British Art"
@@ -115,21 +117,3 @@ fblocks.each do |k,v|
   file.close
 end
 solr.commit
-
-
-
-#for each object
-  #get entry/book name
-    #notebook_i #
-    #entry_i #
-    #label = Notebook # Entry #
-    #subject
-  #location = 'Yale Center for British Art'
-  #author = 'Meyers, Amy'
-  #scan
-
-
-  #scan id, like "scan-0001"
-
-#for each scan
-#index each scan
