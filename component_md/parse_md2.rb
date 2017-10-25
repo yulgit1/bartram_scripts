@@ -108,8 +108,12 @@ fblocks.each do |k,v|
     File.open(solr_scans+"/"+scan_file+".json") do |f|
       scan_hash = eval(f.read)
     end
+    doc[:scan_s] = "scan"
     doc = doc.merge(scan_hash)
+  else
+    doc[:scan_s] = "no scan"
   end
+
 
   solr.add doc
   file = File.open("#{solr_notebooks}/#{id}.json", 'w')
