@@ -1,13 +1,19 @@
 require 'json'
 require 'rsolr'
 require 'uri'
+require 'fileutils'
 
 #helper method
 def parse_key_for_subject(k)
   #get subject from filename in notebook_markdown directory
+  if k.split("_")[0].gsub("s","").length == 1
+    k = k.gsub("s","s0")
+  end
+  #puts "k:"+k
   f = k.split("_").slice(0..1).join("_").gsub("s","entry").gsub("b","book")
   d = "/Users/erjhome/RubymineProjects/Amy_Natural_History/notebook_markdown"
   fd = d+'/'+f+'*.md'
+  #puts "fd:" + fd
   ff = Dir.glob(fd).each { |md_file| md_file }
   bn = File.basename(ff[0],".md")
   sub = bn.split('-')[1]
@@ -21,9 +27,11 @@ end
 #onefile = "/Users/erjhome/RubymineProjects/Amy_Natural_History/component_md/sample1/s12_b4_tagged.md"
 
 #tagged_notebooks = "/Users/erjhome/RubymineProjects/Amy_Natural_History/component_md/sample1"
-tagged_notebooks = "/Users/erjhome/RubymineProjects/Amy_Natural_History/component_md/tagged_md1/Notebook 1"
-solr_notebooks = "/Users/erjhome/RubymineProjects/Amy_Natural_History/component_md/tagged_md1/Notebook 1/solrdocs"
+tagged_notebooks = "/Users/erjhome/RubymineProjects/Amy_Natural_History/component_md/tagged_md1/Notebook 8"
+solr_notebooks = "/Users/erjhome/RubymineProjects/Amy_Natural_History/component_md/tagged_md1/Notebook 8/solrdocs"
 solr_scans = "/Users/erjhome/RubymineProjects/Amy_Natural_History/component_md/solrscans"
+
+FileUtils::mkdir_p solr_notebooks
 
 blocks = Hash.new
 Dir.chdir(tagged_notebooks)
@@ -108,10 +116,10 @@ fblocks.each do |k,v|
     File.open(solr_scans+"/"+scan_file+".json") do |f|
       scan_hash = eval(f.read)
     end
-    doc[:scan_s] = "scan"
+    doc[:has_scan_s] = "scan"
     doc = doc.merge(scan_hash)
   else
-    doc[:scan_s] = "no scan"
+    doc[:has_scan_s] = "no scan"
   end
 
 
