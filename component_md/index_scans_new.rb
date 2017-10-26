@@ -7,6 +7,11 @@ solr_directory = "#{root_directory}/component_md/solrscans"
 url_prefix = 'http://ec2-54-91-198-228.compute-1.amazonaws.com:3000'
 solr_url = 'http://127.0.0.1:8983/solr/bertram1'
 
+#configuration notes
+#this isn't used, instead using parse_md2 to pull scan metadata into the object
+#
+#if this were to be used, uncomment solr connect, add, and commit lines to index
+
 def index_scans(image_directory, url_prefix, solr_url,solr_directory)
   #solr = RSolr.connect :url => solr_url
   Dir.chdir(image_directory)

@@ -3,6 +3,15 @@ require 'rsolr'
 require 'uri'
 require 'fileutils'
 
+#configuration notes
+#
+# 1) in parse_key_for_subject, notebooks 1-6 are in notebook_markdown, notebooks 7-8 are in notebook_7_8b_md.
+# change the d variable accordingly
+#
+# 2) change tagged_notebooks and solr_notebooks directory to reflect each of Notebooks 1-8, and run script for each
+#
+# 3) when running notebook 1, see logic in parse_key_for_subject for converting s1-9 to s01-09
+
 #helper method
 def parse_key_for_subject(k)
   #get subject from filename in notebook_markdown directory
@@ -11,7 +20,8 @@ def parse_key_for_subject(k)
   end
   #puts "k:"+k
   f = k.split("_").slice(0..1).join("_").gsub("s","entry").gsub("b","book")
-  d = "/Users/erjhome/RubymineProjects/Amy_Natural_History/notebook_markdown"
+  #d = "/Users/erjhome/RubymineProjects/Amy_Natural_History/notebook_markdown"
+  d = "/Users/erjhome/RubymineProjects/Amy_Natural_History/notebook_7_8b_md"
   fd = d+'/'+f+'*.md'
   #puts "fd:" + fd
   ff = Dir.glob(fd).each { |md_file| md_file }
@@ -27,8 +37,8 @@ end
 #onefile = "/Users/erjhome/RubymineProjects/Amy_Natural_History/component_md/sample1/s12_b4_tagged.md"
 
 #tagged_notebooks = "/Users/erjhome/RubymineProjects/Amy_Natural_History/component_md/sample1"
-tagged_notebooks = "/Users/erjhome/RubymineProjects/Amy_Natural_History/component_md/tagged_md1/Notebook 8"
-solr_notebooks = "/Users/erjhome/RubymineProjects/Amy_Natural_History/component_md/tagged_md1/Notebook 8/solrdocs"
+tagged_notebooks = "/Users/erjhome/RubymineProjects/Amy_Natural_History/component_md/tagged_md1/Notebook 7"
+solr_notebooks = "/Users/erjhome/RubymineProjects/Amy_Natural_History/component_md/tagged_md1/Notebook 7/solrdocs"
 solr_scans = "/Users/erjhome/RubymineProjects/Amy_Natural_History/component_md/solrscans"
 
 FileUtils::mkdir_p solr_notebooks
