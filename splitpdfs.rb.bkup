@@ -5,7 +5,6 @@ require 'iiif/presentation'
 require 'rsolr'
 require 'nokogiri'
 require 'fileutils'
-require 'uri'
 
 # rvm use 2.4.0@bartram
 
@@ -157,11 +156,9 @@ def generate_metadata(directory_name, image_directory)
 end
 
 def generate_manifests(image_directory, url_prefix, manifest_directory)
-	puts 'in generate_manifests'
 	FileUtils.mkdir_p(manifest_directory) unless Dir.exist?(manifest_directory)
 	Dir.chdir(image_directory)
-	Dir.glob('**/metadata-*.json').each_with_index { |md,i|
-		#break if i > 2
+	Dir.glob('**/metadata-*.json').each { |md|
 		Dir.chdir(image_directory)
 		metadata = JSON.parse(File.read(md))
 		iiif_metadata = Array.new
@@ -198,7 +195,7 @@ def generate_manifests(image_directory, url_prefix, manifest_directory)
 			annotation = IIIF::Presentation::Annotation.new()
 			annotation['@id'] = "#{url_prefix}/annotation/#{image_basename}"
 			image = IIIF::Presentation::ImageResource.create_image_api_image_resource({				
-				service_id: "#{url_prefix}/image-service/#{image_basename}",
+				service_id: "#{url_prefix}/iiif/#{image_basename}", 
 				width: width.to_i, 
 				height: height.to_i, 
 				profile:'http://iiif.io/api/image/2/profiles/level2.json'})
@@ -215,9 +212,8 @@ def generate_manifests(image_directory, url_prefix, manifest_directory)
 	}
 end		
 
-def index_scans(image_directory,solr_url)
-	puts 'in index scans'
-	solr = RSolr.connect :url => solr_url
+def index_scans(image_directory, url_prefix, solr_url)
+	solr = solr = RSolr.connect :url => solr_url
 	Dir.chdir(image_directory)
 	Dir.glob('**/metadata-*.json').each { |md|
 		Dir.chdir(image_directory)
@@ -233,8 +229,9 @@ def index_scans(image_directory,solr_url)
 		doc[:author_t] = metadata['creator']
 		doc[:author_unstem_search] = metadata['creator']
 		doc[:author_display_facet] = metadata['creator']
-		doc[:iiif_manifest_s] = "https://s3.amazonaws.com/bertrammanifests/#{metadata['id']}.json"
-		doc[:iiif_thumbnail_s] = "http://localhost:3000/image-service/#{metadata['id'].gsub('scan','image')}-00/full/150,150/0/default.jpg"
+		doc[:timestamp] = Time.now.utc.iso8601
+		doc[:iiif_manifest_s] = "#{url_prefix}/manifest/#{metadata['id']}"
+		doc[:iiif_thumbnail_s] = "#{url_prefix}/iiif/#{metadata['id'].gsub('scan','image')}-00"
 		doc[:part_of_facet] = metadata['within']
 		doc[:part_of_s] = metadata['within']
 		doc[:location_facet] = metadata['location']
@@ -245,8 +242,6 @@ def index_scans(image_directory,solr_url)
 		doc[:photo_s] = metadata['photo']
 		doc[:institutional_stamp_s] = metadata['institutional_stamp']
 		doc[:format] = 'scan'
-		doc[:object_type_s] = "scan"
-		doc[:timestamp] = Time.now.utc
 		solr.add doc
 	}
 	solr.commit
@@ -303,8 +298,7 @@ def index_notebooks(markdown_notebooks, solr_url)
 	solr.commit
 end
 
-#solr_url = 'http://127.0.0.1:8983/solr/blacklight-core'
-solr_url = 'http://127.0.0.1:8983/solr/bertram2'
+solr_url = 'http://127.0.0.1:8983/solr/blacklight-core'
 #solr_url = 'http://ec2-54-91-198-228.compute-1.amazonaws.com:8983/solr/blacklight-core'
 
 
@@ -347,12 +341,3 @@ out = '/Users/erjhome/RubymineProjects/Amy_Natural_History/images'
 #out = '/Users/erjhome/RubymineProjects/Amy_Natural_History/iiif-images'
 #copy_images(source,out,779)
 
-#ERJ generate manifest with localhost:3000/image-service
-#image_directory = '/Users/erjhome/RubymineProjects/Amy_Natural_History/images'
-#url_prefix = 'http://localhost:3000'
-#manifest_directory = "/Users/erjhome/RubymineProjects/Amy_Natural_History/local_manifests"
-#generate_manifests(image_directory, url_prefix, manifest_directory)
-
-#ERJ index scans - now up to 806
-image_directory = '/Users/erjhome/RubymineProjects/Amy_Natural_History/images'
-index_scans(image_directory,solr_url)
