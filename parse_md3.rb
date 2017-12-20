@@ -10,9 +10,9 @@ require 'httparty'
 # 1) change tagged_notebooks and solr_notebooks directory to reflect each of Notebooks 1-9, and run script for each
 
 #input
-tagged_notebooks = "/Users/erjhome/RubymineProjects/Amy_Natural_History/Bartram Files Updated/Notebook1/Notebook1 mds/Tagged Files"
+tagged_notebooks = "/Users/erjhome/RubymineProjects/Amy_Natural_History/Bartram Files Updated/Notebook8/Notebook8 mds/Tagged Files"
 #output
-solr_notebooks = "/Users/erjhome/RubymineProjects/Amy_Natural_History/Bartram Files Updated/Notebook1/Notebook1 mds/Tagged Files/solrdocs"
+solr_notebooks = "/Users/erjhome/RubymineProjects/Amy_Natural_History/Bartram Files Updated/Notebook8/Notebook8 mds/Tagged Files/solrdocs"
 solr_scans = "/Users/erjhome/RubymineProjects/Amy_Natural_History/component_md/solrscans"
 
 def parse_key_for_subject(k,d)
@@ -158,9 +158,11 @@ fblocks.each do |k,v|
   cmd = 'curl -D - -F "file=@'+f+'" '+s
   l = ""
   Open3.popen3(cmd) do |stdin, stdout, stderr, wait_thr|
+    #puts "stderr:"+stderr.to_s
     l = stdout.readlines[8].gsub("Location: ","").strip
   end
   a = Array.new
+  puts "l:" + l
   response = HTTParty.get(l)
   json = JSON.parse(response.body)
   json["names"].each do |name|

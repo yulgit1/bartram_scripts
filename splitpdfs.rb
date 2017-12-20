@@ -69,6 +69,22 @@ def copy_images(source,out,start)
 	}
 end
 
+def copy_scan_metadata(source,out,start)
+	puts 'copy_scan_metadata'
+	Dir.chdir(source)
+	Dir.glob('**/*.json').each_with_index { |json, i|
+		#break if i > 3
+		path = File.realpath(json)
+		name = File.basename(json)
+		n = name.split("-")[1].to_i
+		if n > start
+			puts "p:" + path
+			puts "n:" + name
+			FileUtils.cp path, out+ "/" + name
+		end
+	}
+end
+
 
 def load_scan_metadata(image_directory) 
   metadata = Hash.new
@@ -372,6 +388,12 @@ out = '/Users/erjhome/RubymineProjects/Amy_Natural_History/images'
 #out = '/Users/erjhome/RubymineProjects/Amy_Natural_History/iiif-images'
 #copy_images(source,out,779)
 
+#ERJ to copy json to component_md/solrscans
+source = '/Users/erjhome/RubymineProjects/Amy_Natural_History/images'
+out = '/Users/erjhome/RubymineProjects/Amy_Natural_History/component_md/solrscans'
+copy_scan_metadata(source,out,779)
+
+
 #ERJ generate manifest with localhost:3000/image-service
 #image_directory = '/Users/erjhome/RubymineProjects/Amy_Natural_History/images'
 #url_prefix = 'http://localhost:3000'
@@ -379,5 +401,5 @@ out = '/Users/erjhome/RubymineProjects/Amy_Natural_History/images'
 #generate_manifests(image_directory, url_prefix, manifest_directory)
 
 #ERJ index scans - now up to 806
-image_directory = '/Users/erjhome/RubymineProjects/Amy_Natural_History/images'
-index_scans(image_directory,solr_url)
+#image_directory = '/Users/erjhome/RubymineProjects/Amy_Natural_History/images'
+#index_scans(image_directory,solr_url)

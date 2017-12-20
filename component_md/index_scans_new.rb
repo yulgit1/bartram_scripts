@@ -12,12 +12,17 @@ solr_url = 'http://127.0.0.1:8983/solr/bertram1'
 #
 #if this were to be used, uncomment solr connect, add, and commit lines to index
 
-def index_scans(image_directory, url_prefix, solr_url,solr_directory)
+def index_scans(image_directory, url_prefix, solr_url,solr_directory,start)
   #solr = RSolr.connect :url => solr_url
   Dir.chdir(image_directory)
   Dir.glob('**/metadata-*.json').each { |md|
     puts md
     Dir.chdir(image_directory)
+    name = File.basename(md)
+    puts name
+    n = name.split("-")[1].to_i
+    next if n < start
+    puts "n:"+ n.to_s
     metadata = JSON.parse(File.read(md))
     doc = Hash.new
     doc[:scan_title_s] = metadata['label']
@@ -28,8 +33,8 @@ def index_scans(image_directory, url_prefix, solr_url,solr_directory)
     doc[:scan_author_s] = metadata['creator']
     doc[:scan_author_t] = metadata['creator']
     #doc[:timestamp] = Time.now.utc
-    doc[:iiif_manifest_s] = "#{url_prefix}/manifest/#{metadata['id']}"
-    doc[:iiif_thumbnail_s] = "#{url_prefix}/iiif/#{metadata['id'].gsub('scan','image')}-00"
+    #doc[:iiif_manifest_s] = "#{url_prefix}/manifest/#{metadata['id']}"
+    #doc[:iiif_thumbnail_s] = "#{url_prefix}/iiif/#{metadata['id'].gsub('scan','image')}-00"
     doc[:scan_part_of_s] = metadata['within']
     doc[:scan_part_of_s] = metadata['within']
     doc[:scan_location_s] = metadata['location']
@@ -48,4 +53,4 @@ def index_scans(image_directory, url_prefix, solr_url,solr_directory)
   #solr.commit
 end
 
-index_scans(image_directory, url_prefix, solr_url,solr_directory)
+index_scans(image_directory, url_prefix, solr_url,solr_directory,780)
