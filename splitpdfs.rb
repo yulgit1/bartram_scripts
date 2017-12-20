@@ -6,6 +6,8 @@ require 'rsolr'
 require 'nokogiri'
 require 'fileutils'
 require 'uri'
+require 'open3'
+require 'httparty'
 
 # rvm use 2.4.0@bartram
 
@@ -229,6 +231,7 @@ def index_scans(image_directory,solr_url)
 		doc[:text] = "#{metadata['label']} #{metadata['recto']} #{metadata['verso']}"
 		doc[:subject_topic_facet] = metadata['subject']
 		doc[:subject_topic_s] = metadata['subject']
+		doc[:gnrd_sm] = get_gnrd(metadata['label'])
 		doc[:author_display] = metadata['creator']
 		doc[:author_t] = metadata['creator']
 		doc[:author_unstem_search] = metadata['creator']
@@ -250,6 +253,28 @@ def index_scans(image_directory,solr_url)
 		solr.add doc
 	}
 	solr.commit
+end
+
+def get_gnrd(label)
+	s = "http://gnrd.globalnames.org/name_finder.json"
+	f = "object_tmp.txt"
+	open(f, 'w') { |f|
+		f.puts label
+	}
+	cmd = 'curl -D - -F "file=@'+f+'" '+s
+	l = ""
+	Open3.popen3(cmd) do |stdin, stdout, stderr, wait_thr|
+		l = stdout.readlines[8].gsub("Location: ","").strip
+	end
+	a = Array.new
+	response = HTTParty.get(l)
+	json = JSON.parse(response.body)
+	json["names"].each do |name|
+		a.push(name["scientificName"])
+	end
+
+	puts "gnrd:" + a.inspect
+	return a
 end
 
 def index_notebooks(markdown_notebooks, solr_url)

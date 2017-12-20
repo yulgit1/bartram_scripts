@@ -27,8 +27,15 @@ def parse_key_for_subject(k,d)
   return "" if ff.empty?
   bn = File.basename(ff[0],".md")
   sub = bn.split('-')[1]
-  sub = "" if sub.nil?
-  return sub
+  if sub.nil?
+    puts "sub is nil"
+    return ""
+  else
+    puts "sub:" + sub
+    sub2 = sub.gsub("_tagged","")
+    puts "sub2:" + sub2
+    return sub2
+  end
 end
 
 FileUtils::mkdir_p solr_notebooks
