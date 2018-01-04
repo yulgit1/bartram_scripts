@@ -78,7 +78,13 @@ BBinderX - PDF and corresponding docx
   blacklight(solr metadata+iiif manifest)- TODO: catalogcontroller treaks, notebook: real manifest (for markdown->manifest)?
    or samvera (content model and datastreams)
 
-
+-----
+documentation of last ingest process:
+1) schema.xml *_sm field, *_t
+2) splitpdfs.rb
+3) parse_md3.rb
+4) index_scans_new.rb
+5) s3 bucket for local manifests
 
 
 
