@@ -79,11 +79,10 @@ BBinderX - PDF and corresponding docx
    or samvera (content model and datastreams)
 
 -----
-documentation of last ingest process:
+documentation of last ingest process, see commit history for further remembering:
 1) schema.xml *_sm field, *_t
 2) splitpdfs.rb
 3) parse_md3.rb
-4) index_scans_new.rb
 5) s3 bucket for local manifests
 
 
