@@ -389,16 +389,17 @@ out = '/Users/erjhome/RubymineProjects/Amy_Natural_History/images'
 #copy_images(source,out,779)
 
 #ERJ to copy json to component_md/solrscans
-source = '/Users/erjhome/RubymineProjects/Amy_Natural_History/images'
-out = '/Users/erjhome/RubymineProjects/Amy_Natural_History/component_md/solrscans'
-copy_scan_metadata(source,out,779)
+#source = '/Users/erjhome/RubymineProjects/Amy_Natural_History/images'
+#out = '/Users/erjhome/RubymineProjects/Amy_Natural_History/component_md/solrscans'
+#copy_scan_metadata(source,out,779)
 
 
 #ERJ generate manifest with localhost:3000/image-service
-#image_directory = '/Users/erjhome/RubymineProjects/Amy_Natural_History/images'
-#url_prefix = 'http://localhost:3000'
-#manifest_directory = "/Users/erjhome/RubymineProjects/Amy_Natural_History/local_manifests"
-#generate_manifests(image_directory, url_prefix, manifest_directory)
+image_directory = '/Users/erjhome/RubymineProjects/Amy_Natural_History/images'
+#url_prefix = 'http://localhost:3000' #local_manifests
+url_prefix = 'http://10.5.96.214:3000' #instance_manifests
+manifest_directory = "/Users/erjhome/RubymineProjects/Amy_Natural_History/instance_manifests"
+generate_manifests(image_directory, url_prefix, manifest_directory)
 
 #ERJ index scans - now up to 806
 #image_directory = '/Users/erjhome/RubymineProjects/Amy_Natural_History/images'
